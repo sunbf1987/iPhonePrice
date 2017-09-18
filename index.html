@@ -161,7 +161,7 @@
 						capacity = param.item['capacity'],
 						urlPath = param.country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ param.item['type'] +"&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED";
 
-		            $.getJSON("http://query.yahooapis.com/v1/public/yql", {
+		            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
 		                q: "select * from json where url=\""+urlPath+"\"",
 		                format: "json"
 		            }, function (data) {
