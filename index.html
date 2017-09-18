@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width">
+<title>获取苹果官网无锁版iphone价格</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<style type="text/css">
+	*{margin:0; padding:0;}
+	ul{ list-style: none; display: table;}
+	li{ margin:10px auto; list-style: none; display:table-row;}
+	span{margin:20px; display:inline-block; width:150px;}
+	h1{ font-size:26px; font-weight: 700; margin-top:10px;}
+	.info{ overflow: hidden; line-height:40px;}
+	p{ font-size:14px;}
+	.update{ font-size:20px; font-weight: 400; margin-top:10px;}
+	.btn{float:right; border:0 none; padding:5px 10px; outline: none; cursor:pointer; border-radius: 4px; margin:-34px 100px 0 0; background-color: #f1f1f1; touch-action: manipulation; transition: all .3s;}
+	.btn:hover{color: #333; background-color: #e6e6e6;}
+	#cn{background-color:aliceblue; margin-top:200px;}
+	#jp{background-color:beige;}
+	#us{background-color:honeydew;}
+	#hk-zh{background-color:ivory;}
+	#content{ width:760px; margin:0 auto; text-align: center; font-size:16px;}
+	#thead{ background-color:lightgreen; font-size:18px; position: fixed; top:0;}
+</style>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="json2.js"></script>
+<script type="text/javascript" src="iphoneJson.js"></script>
+</head>
+<body>
+	<div id="content">
+		<div id="thead">
+			<h1>iPhone无锁版价格</h1>
+			<div class="info">				
+				<h2 class="update"></h2>
+				<button class="btn">更新数据</button>
+				<p>数据来源：https://www.apple.com/</p>				
+			</div>
+			<div><span>地区</span><span>型号</span><span>容量</span><span>价格</span></div>
+		</div>
+		<ul id="cn"></ul>
+		<ul id="hk-zh"></ul>
+		<ul id="us"></ul>
+		<ul id="jp"></ul>
+	</div>
+	<script>
+		!(function(win,$){
+			var iphoneJson = win.iphoneJson,
+				storage = win.localStorage;
+			 var defaults = {
+		        getStorageDate : storage ? storage.getItem('update') : undefined, //上次访问时间
+				update : new Date().getTime(), //初始时间
+				timestamp : 0,
+				USD : "6.5481",
+				HKD : "0.8381",
+				YEN : "0.05926",
+				RMB : "1"
+		    }
+		    $.fn.PhonePrice = function(options){
+		        return new UpDateiPhone(this,options)
+		    };
+		    var UpDateiPhone = function(element,options){
+		        var that = this;
+		        that.$el = element;
+		        that.init(options); 
+		        return this;
+		    };
+		    UpDateiPhone.prototype.init = function(options){
+		    	var that = this;
+		    	that.opts = $.extend({},{
+		    		updateText:that.$el.find('.update')
+		    	},defaults,options);
+		    
+		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
+					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
+					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
+					chinaResult = !that.opts.getStorageDate ? [] : storage.getItem('china');
+
+				if(that.opts.getStorageDate){
+					that.opts.timestamp = parseInt(that.opts.getStorageDate,10);
+				}else{
+					that.opts.timestamp = that.opts.update;
+				}			
+	        	var date = new Date(that.opts.timestamp);
+	       		var formattedDate = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2) + " " + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+
+				that.opts.updateText.html('更新时间：'+formattedDate)
+					        		
+				console.log(that.opts.getStorageDate)				
+				if(that.opts.getStorageDate){
+					iPhoneType(JSON.parse(japanResult),"japan",that.opts.YEN);
+					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
+					iPhoneType(JSON.parse(chinaResult),"china",that.opts.RMB);
+					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
+					return ;
+				}				
+
+				for (var prop in iphoneJson) {
+					var item = iphoneJson[prop];
+					for (var p in item) {
+						if(p === "japan"){
+							japanResult.push(item[p]);
+							iPhoneType(japanResult[0],"japan",that.opts.YEN);
+						}else if(p === "hongkong"){
+							hongkongResult.push(item[p]);
+							iPhoneType(hongkongResult[0],"hongkong",that.opts.HKD);
+						}else if(p === "china"){
+							chinaResult.push(item[p]);
+							iPhoneType(chinaResult[0],"china",that.opts.RMB);
+						}else{
+							usResult.push(item[p]);
+							iPhoneType(usResult[0],"us",that.opts.USD);
+						}
+					}
+				}
+				
+
+				function iPhoneType(obj,country,exchange) {
+					var result = obj;
+					var iphoneResult = [];
+					var exchange = +exchange || 1;
+					var results = {};
+					var iphoneJson = [];
+					results['iphoneJson'] = [];
+					var resultJson = results['iphoneJson'];
+
+					for (var i=0, len = result.length; i < len; i++) {
+						(function(i){
+							var param = {
+								item : result[i],
+								country: country,
+								exchange : exchange
+							}
+							
+							if(!that.opts.getStorageDate){
+								getWebJson(param,iphoneResult,resultJson,iphoneJson);
+							}else{
+								getStorage(param,iphoneResult)
+							}
+							
+						})(i)
+					};
+					
+				}
+				function getStorage (param,iphoneResult) {
+					var name = param.item['name'],
+						city = param.item['city'],
+						capacity = param.item['capacity'],
+						float_price = param.item['seo_price']
+
+					iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+					$("#"+city).html(iphoneResult.join(''));
+				}
+
+				function getWebJson (param,iphoneResult,resultJson,iphoneJson) {
+					var name = param.item['name'],
+						city = param.item['city'],
+						capacity = param.item['capacity'],
+						urlPath = param.country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ param.item['type'] +"&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED";
+
+		            $.getJSON("http://query.yahooapis.com/v1/public/yql", {
+		                q: "select * from json where url=\""+urlPath+"\"",
+		                format: "json"
+		            }, function (data) {
+		                if (data.query.results) {
+		                    var head = data.query.results.json ? data.query.results.json.head : '';
+		                    var body = data.query.results.json ? data.query.results.json.body : '';
+
+		                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
+	                    	var float_price = seo_price ? (parseFloat(seo_price) * param.exchange).toFixed(2) : '暂无';		                    	
+
+					    	iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+
+					    	resultJson = {
+						    	seo_price:float_price,
+						    	country:param.country,
+						    	city:city,
+						    	name:name,
+						    	capacity:capacity
+					    	}
+					    	 
+					    	iphoneJson.push(resultJson)						   
+					    	iphoneJson.join('');
+
+		 					$("#"+city).html(iphoneResult.join(''));
+		 					//缓存
+							if(!storage){
+								return false;
+							}else{
+								storage.setItem("update",that.opts.update)
+								storage.setItem(param.country,JSON.stringify(iphoneJson))
+							}
+		                }else {
+		                    iphoneResult.push("<li>no such code: "+ head.status +"</li>");
+	             		}
+		            });
+				}
+			}
+		})(window, window.jQuery);
+
+		$("#content").PhonePrice();
+		$(".btn").on("click", function () {
+			var storage = window.localStorage;
+			if(storage){
+				storage.removeItem("update");
+				$("#content").PhonePrice();
+			}
+		})
+	</script>
+</body>
+</html>
