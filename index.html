@@ -128,8 +128,8 @@
 				        }, 
 				        timeout : 30000,
 				        async : false, 
-				        success : function(resp){ 
-				        	rate = resp.data.rates.CNY;
+				        success : function(data){ 
+				        	rate = data.rates.CNY;
 				        	return rate;
 				        },error:function(xhr,textStatus){
 				        	rate = null;
