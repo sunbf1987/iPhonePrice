@@ -65,12 +65,12 @@
 		    	that.opts = $.extend({},{
 		    		update : new Date().getTime(), //初始时间
 					timestamp : 0,					
-		    		getStorageDate : storage ? storage.getItem('update') : undefined, //上次访问时间
+		    		getStorageDate : storage && storage.getItem('update') ? storage.getItem('update') : undefined, //上次访问时间
 		    		updateText:that.$el.find('.update'),
 		    		CNY : '1',
-		    		USD: storage ? storage.getItem('USD') : getCurrency('USD'),
-		    		HKD: storage ? storage.getItem('HKD') : getCurrency('HKD'),
-		    		JPY: storage ? storage.getItem('JPY') : getCurrency('JPY')
+		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : getCurrency('USD'),
+		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : getCurrency('HKD'),
+		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : getCurrency('JPY')
 		    	},options);
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
