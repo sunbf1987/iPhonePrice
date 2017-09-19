@@ -72,7 +72,7 @@
 		    		HKD: storage ? storage.getItem('HKD') : getCurrency('HKD'),
 		    		JPY: storage ? storage.getItem('JPY') : getCurrency('JPY')
 		    	},options);
-		    	console.log('CNY:'+CNY+', USD:'+USD+', HKD:'+HKD+', JPY:'+JPY);
+		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
 					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
@@ -122,7 +122,10 @@
 					$.ajax({ 
 				        type : "get", 
 				        url : "https://api.fixer.io/latest?", 
-				        data : "base="+unit+"&symbols=CNY", 
+				        data : {
+				        	"base":unit,
+				        	"symbols":"CNY"
+				        }, 
 				        timeout : 30000,
 				        async : false, 
 				        success : function(resp){ 
