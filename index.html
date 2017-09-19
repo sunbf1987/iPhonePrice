@@ -206,7 +206,9 @@
 			var storage = window.localStorage;
 			if(storage){
 				storage.removeItem("update");
-				$("#content").PhonePrice();
+				$("#content").PhonePrice({
+					getStorageDate:null
+				});
 			}
 		})
 	</script>
