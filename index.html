@@ -9,22 +9,45 @@
 <meta name="keywords" content="">
 <link href="" rel="stylesheet">
 <style type="text/css">
-	*{margin:0; padding:0;}
-	ul{ list-style: none; display: table;}
-	li{ margin:10px auto; list-style: none; display:table-row;}
-	span{margin:20px; display:inline-block; width:150px;}
-	h1{ font-size:26px; font-weight: 700; margin-top:10px;}
-	.info{ overflow: hidden; line-height:40px;}
-	p{ font-size:14px;}
-	.update{ font-size:20px; font-weight: 400; margin-top:10px;}
-	.btn{float:right; border:0 none; padding:5px 10px; outline: none; cursor:pointer; border-radius: 4px; margin:-34px 100px 0 0; background-color: #f1f1f1; touch-action: manipulation; transition: all .3s;}
-	.btn:hover{color: #333; background-color: #e6e6e6;}
-	#cn{background-color:aliceblue; margin-top:200px;}
-	#jp{background-color:beige;}
-	#us{background-color:honeydew;}
-	#hk-zh{background-color:ivory;}
-	#content{ width:760px; margin:0 auto; text-align: center; font-size:16px;}
-	#thead{ background-color:lightgreen; font-size:18px; position: fixed; top:0;}
+	*{margin:0;padding:0}
+	ul{display:table; display: none}
+	li,ul{list-style:none}
+	li{display:table-row;margin:10px auto}
+	span{display:inline-block;margin:20px;width:150px}
+	h1{margin-top:10px;font-weight:700;font-size:26px}
+	.info{overflow:hidden;line-height:40px}
+	p{font-size:14px}
+	.update{margin-top:10px;font-weight:400;font-size:20px}
+	.btn{float:right;margin:-34px 75pt 0 0;padding:5px 10px;outline:0;border:0 none;border-radius:4px;background-color:#f1f1f1;cursor:pointer;transition:all .3s;touch-action:manipulation}
+	.btn:hover{background-color:#e6e6e6;color:#333}
+	#cn{margin-top:200px;background-color:#f0f8ff}
+	#jp{background-color:beige}
+	#us{background-color:#f0fff0}
+	#hk-zh{background-color:ivory}
+	#content{margin:0 auto;width:760px;height:125pc;text-align:center;font-size:1pc}
+	#thead{background-color:#90ee90;font-size:18px}
+	#loading,#thead{position:fixed;top:0}
+	#loading{left:0;overflow:hidden;width:100%;height:100%;background-color:rgba(255,0,0,0)}
+	.load{position:absolute;top:50%;left:50%;margin:-50px 0 0 -50px;width:75pt;height:75pt;border-radius:5px;background-color:rgba(0,0,0,.6);color:#fff;text-align:center;font-size:14px}
+	.load p{margin-top:70px}
+	.line-spin-fade-loader{position:relative;top:28px;left:46px}
+	.line-spin-fade-loader>div{position:absolute;margin:2px;width:4px;height:14px;border-radius:2px;background-color:#fff;-webkit-animation-fill-mode:both;animation-fill-mode:both}
+	.line-spin-fade-loader>div:nth-child(1){top:1pc;left:0;-webkit-animation:line-spin-fade-loader 1.2s .12s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .12s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(2){top:8.73pt;left:8.73pt;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-ms-transform:rotate(-45deg);-webkit-animation:line-spin-fade-loader 1.2s .24s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .24s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(3){top:0;left:1pc;-webkit-transform:rotate(90deg);transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-animation:line-spin-fade-loader 1.2s .36s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .36s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(4){top:-8.73pt;left:8.73pt;-webkit-transform:rotate(45deg);transform:rotate(45deg);-ms-transform:rotate(45deg);-webkit-animation:line-spin-fade-loader 1.2s .48s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .48s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(5){top:-1pc;left:0;-webkit-animation:line-spin-fade-loader 1.2s .6s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .6s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(6){top:-8.73pt;left:-8.73pt;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-ms-transform:rotate(-45deg);-webkit-animation:line-spin-fade-loader 1.2s .72s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .72s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(7){top:0;left:-1pc;-webkit-transform:rotate(90deg);transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-animation:line-spin-fade-loader 1.2s .84s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .84s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(8){top:8.73pt;left:-8.73pt;-webkit-transform:rotate(45deg);transform:rotate(45deg);-ms-transform:rotate(45deg);-webkit-animation:line-spin-fade-loader 1.2s .96s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .96s infinite ease-in-out}
+	@-webkit-keyframes line-spin-fade-loader{
+		50%{opacity:.3}
+		to{opacity:1}
+	}
+	@keyframes line-spin-fade-loader{
+		50%{opacity:.3}
+		to{opacity:1}
+	}
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="json2.js"></script>
@@ -45,6 +68,21 @@
 		<ul id="hk-zh"></ul>
 		<ul id="us"></ul>
 		<ul id="jp"></ul>
+	</div>
+	<div id="loading">
+		<div class="load">
+			<div class="loader-inner line-spin-fade-loader">
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	        </div>
+			<p>数据加载中</p>
+		</div>
 	</div>
 	<script>
 		!(function(win,$){
@@ -67,11 +105,13 @@
 					timestamp : 0,					
 		    		getStorageDate : storage && storage.getItem('update') ? storage.getItem('update') : undefined, //上次访问时间
 		    		updateText:that.$el.find('.update'),
+		    		ul: that.$el.find('ul');
 		    		CNY : '1',
 		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : getCurrency('USD'),
 		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : getCurrency('HKD'),
 		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : getCurrency('JPY')
 		    	},options);
+		    	that.opts.ul.hide();
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
@@ -88,8 +128,7 @@
 	       		var formattedDate = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2) + " " + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
 
 				that.opts.updateText.html('更新时间：'+formattedDate)
-					        		
-				console.log(that.opts.getStorageDate)				
+					        					
 				if(that.opts.getStorageDate){
 					iPhoneType(JSON.parse(japanResult),"japan",that.opts.JPY);
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
@@ -116,7 +155,7 @@
 						}
 					}
 				}
-				
+				//获取汇率
 				function getCurrency(unit){
 					var rates = function(){
 						var rate = '';
@@ -140,7 +179,7 @@
 					}();
 					return rates;
 				}
-
+				//解析数据输出
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
 					var iphoneResult = [];
@@ -168,6 +207,7 @@
 					};
 					
 				}
+				//本地获取数据
 				function getStorage (param,iphoneResult) {
 					var name = param.item['name'],
 						city = param.item['city'],
@@ -177,7 +217,7 @@
 					iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
 					$("#"+city).html(iphoneResult.join(''));
 				}
-
+				//在线获取数据
 				function getWebJson (param,iphoneResult,resultJson,iphoneJson) {
 					var name = param.item['name'],
 						city = param.item['city'],
@@ -225,6 +265,7 @@
 	             		}
 		            });
 				}
+				that.opts.ul.show();
 			}
 		})(window, window.jQuery);
 
@@ -235,7 +276,10 @@
 				storage.clear();
 				$("#content").PhonePrice();
 			}
-		})
+		});
+		window.onload = function(){
+			$('ul').show();
+		}
 	</script>
 </body>
 </html>
