@@ -105,13 +105,15 @@
 					timestamp : 0,					
 		    		getStorageDate : storage && storage.getItem('update') ? storage.getItem('update') : undefined, //上次访问时间
 		    		updateText:that.$el.find('.update'),
-		    		ul: that.$el.find('ul');
+		    		ul: that.$el.find('ul'),
+		    		loading: that.$el.find('#loading'),
 		    		CNY : '1',
 		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : getCurrency('USD'),
 		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : getCurrency('HKD'),
 		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : getCurrency('JPY')
 		    	},options);
 		    	that.opts.ul.hide();
+		    	that.opts.loading.show();
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
@@ -265,20 +267,22 @@
 	             		}
 		            });
 				}
+				that.opts.loading.hide();
 				that.opts.ul.show();
 			}
 		})(window, window.jQuery);
 
-		$("#content").PhonePrice();
+		$("body").PhonePrice();
 		$(".btn").on("click", function () {
 			var storage = window.localStorage;
 			if(storage){
 				storage.clear();
-				$("#content").PhonePrice();
+				$("body").PhonePrice();
 			}
 		});
 		window.onload = function(){
 			$('ul').show();
+			$('#loading').hide();
 		}
 	</script>
 </body>
