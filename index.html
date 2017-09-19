@@ -62,27 +62,6 @@
 		    };
 		    UpDateiPhone.prototype.init = function(options){
 		    	var that = this;
-		    	var getCurrency =  function(unit){
-					var rate = '';
-					$.ajax({ 
-				        type : "get", 
-				        url : "https://api.fixer.io/latest?", 
-				        data : {
-				        	"base":unit,
-				        	"symbols":"CNY"
-				        }, 
-				        timeout : 30000,
-				        async : false, 
-				        success : function(data){ 
-				        	rate = data.rates.CNY;
-				        	return rate;
-				        },error:function(xhr,textStatus){
-				        	rate = null;
-				        	console.log(textStatus);
-				        	return rate;
-				        }				        
-				    }); 
-				}
 		    	that.opts = $.extend({},{
 		    		update : new Date().getTime(), //初始时间
 					timestamp : 0,					
@@ -136,7 +115,31 @@
 							iPhoneType(usResult[0],"us",that.opts.USD);
 						}
 					}
-				}			
+				}
+				
+				function getCurrency(unit){
+					var rates = function(){
+						var rate = '';
+						$.ajax({ 
+					        type : "get", 
+					        url : "https://api.fixer.io/latest?", 
+					        data : {
+					        	"base":unit,
+					        	"symbols":"CNY"
+					        }, 
+					        timeout : 30000,
+					        async : false, 
+					        success : function(data){ 
+					        	rate = data.rates.CNY;
+					        },error:function(xhr,textStatus){
+					        	rate = null;
+					        	console.log(textStatus);
+					        }				        
+					    }); 
+					    return rate;
+					}();
+					return rates;
+				}
 
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
