@@ -114,6 +114,7 @@
 		    	},options);
 		    	that.opts.ul.hide();
 		    	that.opts.loading.show();
+		    	console.log(that.opts.loading)
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
@@ -136,6 +137,8 @@
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
 					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
 					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
+					that.opts.ul.show();
+		    		that.opts.loading.hide();
 					return ;
 				}				
 
@@ -154,6 +157,8 @@
 						}else{
 							usResult.push(item[p]);
 							iPhoneType(usResult[0],"us",that.opts.USD);
+							that.opts.ul.show();
+		    				that.opts.loading.hide();
 						}
 					}
 				}
@@ -203,11 +208,9 @@
 								getWebJson(param,iphoneResult,resultJson,iphoneJson);
 							}else{
 								getStorage(param,iphoneResult)
-							}
-							
+							}							
 						})(i)
-					};
-					
+					};											
 				}
 				//本地获取数据
 				function getStorage (param,iphoneResult) {
@@ -267,9 +270,7 @@
 	             		}
 		            });
 				}
-				that.opts.loading.hide();
-				that.opts.ul.show();
-			}
+			};
 		})(window, window.jQuery);
 
 		$("body").PhonePrice();
@@ -280,10 +281,6 @@
 				$("body").PhonePrice();
 			}
 		});
-		window.onload = function(){
-			$('ul').show();
-			$('#loading').hide();
-		}
 	</script>
 </body>
 </html>
