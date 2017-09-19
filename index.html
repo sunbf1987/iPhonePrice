@@ -127,11 +127,12 @@
 				        async : false, 
 				        success : function(resp){ 
 				        	rate = resp.data.rates.CNY;
+				        	return rate;
 				        },error:function(xhr,textStatus){
 				        	rate = null;
-				        	console.log(textStatus)
-				        }
-				        return rate;
+				        	console.log(textStatus);
+				        	return rate;
+				        }				        
 				    }); 
 				}
 
