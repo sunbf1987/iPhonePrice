@@ -47,18 +47,11 @@
 		<ul id="jp"></ul>
 	</div>
 	<script>
+		var 
 		!(function(win,$){
 			var iphoneJson = win.iphoneJson,
 				storage = win.localStorage;
-			 var defaults = {
-		        getStorageDate : storage ? storage.getItem('update') : undefined, //上次访问时间
-				update : new Date().getTime(), //初始时间
-				timestamp : 0,
-				USD : "6.5481",
-				HKD : "0.8381",
-				YEN : "0.05926",
-				RMB : "1"
-		    }
+
 		    $.fn.PhonePrice = function(options){
 		        return new UpDateiPhone(this,options)
 		    };
@@ -71,13 +64,21 @@
 		    UpDateiPhone.prototype.init = function(options){
 		    	var that = this;
 		    	that.opts = $.extend({},{
-		    		updateText:that.$el.find('.update')
-		    	},defaults,options);
-		    
+		    		update : new Date().getTime(), //初始时间
+					timestamp : 0,					
+		    		getStorageDate : storage ? storage.getItem('update') : undefined, //上次访问时间
+		    		updateText:that.$el.find('.update'),
+		    		CNY : '1',
+		    		USD: storage ? storage.getItem('USD') : getCurrency('USD'),
+		    		HKD: storage ? storage.getItem('HKD') : getCurrency('HKD'),
+		    		JPY: storage ? storage.getItem('JPY') : getCurrency('JPY')
+		    	},options);
+		    	console.log('CNY:'+CNY+', USD:'+USD+', HKD:'+HKD+', JPY:'+JPY);
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
 					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
 					chinaResult = !that.opts.getStorageDate ? [] : storage.getItem('china');
+				
 
 				if(that.opts.getStorageDate){
 					that.opts.timestamp = parseInt(that.opts.getStorageDate,10);
@@ -91,9 +92,9 @@
 					        		
 				console.log(that.opts.getStorageDate)				
 				if(that.opts.getStorageDate){
-					iPhoneType(JSON.parse(japanResult),"japan",that.opts.YEN);
+					iPhoneType(JSON.parse(japanResult),"japan",that.opts.JPY);
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
-					iPhoneType(JSON.parse(chinaResult),"china",that.opts.RMB);
+					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
 					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
 					return ;
 				}				
@@ -103,13 +104,13 @@
 					for (var p in item) {
 						if(p === "japan"){
 							japanResult.push(item[p]);
-							iPhoneType(japanResult[0],"japan",that.opts.YEN);
+							iPhoneType(japanResult[0],"japan",that.opts.JPY);
 						}else if(p === "hongkong"){
 							hongkongResult.push(item[p]);
 							iPhoneType(hongkongResult[0],"hongkong",that.opts.HKD);
 						}else if(p === "china"){
 							chinaResult.push(item[p]);
-							iPhoneType(chinaResult[0],"china",that.opts.RMB);
+							iPhoneType(chinaResult[0],"china",that.opts.CNY);
 						}else{
 							usResult.push(item[p]);
 							iPhoneType(usResult[0],"us",that.opts.USD);
@@ -117,6 +118,23 @@
 					}
 				}
 				
+				function getCurrency(unit){
+					var rate = '';
+					$.ajax({ 
+				        type : "get", 
+				        url : "https://api.fixer.io/latest?", 
+				        data : "base="+unit+"&symbols=CNY", 
+				        timeout : 30000,
+				        async : false, 
+				        success : function(resp){ 
+				        	rate = resp.data.rates.CNY;
+				        },error:function(xhr,textStatus){
+				        	rate = null;
+				        	console.log(textStatus)
+				        }
+				        return rate;
+				    }); 
+				}
 
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
@@ -190,8 +208,12 @@
 							if(!storage){
 								return false;
 							}else{
-								storage.setItem("update",that.opts.update)
-								storage.setItem(param.country,JSON.stringify(iphoneJson))
+								storage.setItem("update",that.opts.update);
+								storage.setItem(param.country,JSON.stringify(iphoneJson));
+								storage.setItem("USD",that.opts.USD)
+								storage.setItem("JPY",that.opts.JPY)
+								storage.setItem("HKD",that.opts.HKD)
+								storage.setItem("CNY","1")
 							}
 		                }else {
 		                    iphoneResult.push("<li>no such code: "+ head.status +"</li>");
@@ -204,10 +226,8 @@
 		$(".btn").on("click", function () {
 			var storage = window.localStorage;
 			if(storage){
-				storage.removeItem("update");
-				$("#content").PhonePrice({
-					getStorageDate:null
-				});
+				storage.clear();
+				$("#content").PhonePrice();
 			}
 		})
 	</script>
