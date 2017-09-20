@@ -10,15 +10,14 @@
 <link href="" rel="stylesheet">
 <style type="text/css">
 	*{margin:0;padding:0}
-	ul{display:table; display: none}
+	ul{display: none}
 	li,ul{list-style:none}
-	li{display:table-row;margin:10px auto}
 	span{display:inline-block;margin:20px;width:150px}
 	h1{margin-top:10px;font-weight:700;font-size:26px}
-	.info{overflow:hidden;line-height:40px}
 	p{font-size:14px}
+	.info{overflow:hidden;line-height:40px}	
 	.update{margin-top:10px;font-weight:400;font-size:20px}
-	.btn{float:right;margin:-34px 75pt 0 0;padding:5px 10px;outline:0;border:0 none;border-radius:4px;background-color:#f1f1f1;cursor:pointer;transition:all .3s;touch-action:manipulation}
+	.btn{float:right;margin:-34px 75pt 0 0;padding:5px 10px;outline:0;border:0 none;border-radius:4px;background-color:#f1f1f1;cursor:pointer;transition:all .3s;}
 	.btn:hover{background-color:#e6e6e6;color:#333}
 	#cn{margin-top:200px;background-color:#f0f8ff}
 	#jp{background-color:beige}
@@ -50,7 +49,6 @@
 	}
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="json2.js"></script>
 <script type="text/javascript" src="iphoneJson.js"></script>
 </head>
 <body>
@@ -88,6 +86,7 @@
 		!(function(win,$){
 			var iphoneJson = win.iphoneJson,
 				storage = win.localStorage;
+			
 
 		    $.fn.PhonePrice = function(options){
 		        return new UpDateiPhone(this,options)
@@ -100,28 +99,34 @@
 		    };
 		    UpDateiPhone.prototype.init = function(options){
 		    	var that = this;
-		    	that.opts = $.extend({},{
+		    	that.initGetCurrency(options);
+			};
+			UpDateiPhone.prototype.showPhonePrice = function(options){
+				var that = this;
+				that.opts = $.extend({},{
 		    		update : new Date().getTime(), //初始时间
 					timestamp : 0,					
 		    		getStorageDate : storage && storage.getItem('update') ? storage.getItem('update') : undefined, //上次访问时间
 		    		updateText:that.$el.find('.update'),
 		    		ul: that.$el.find('ul'),
 		    		loading: that.$el.find('#loading'),
-		    		CNY : '1',
-		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : getCurrency('USD'),
-		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : getCurrency('HKD'),
-		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : getCurrency('JPY')
-		    	},options);
-		    	that.opts.ul.hide();
-		    	that.opts.loading.show();
-		    	console.log(that.opts.loading)
+		    		CNY: storage && storage.getItem('CNY') ? storage.getItem('CNY') : '1.0',
+		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : '6.58470',
+		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : '0.843740',
+		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : '0.0590770'
+		    	},options);	
+
+				that.opts.ul.fadeOut(100);
+		    	that.opts.loading.fadeIn(150);
+
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
+
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
 					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
 					chinaResult = !that.opts.getStorageDate ? [] : storage.getItem('china');
 				
-
+				//转换时间戳 yyyy/mm/dd hh:mm
 				if(that.opts.getStorageDate){
 					that.opts.timestamp = parseInt(that.opts.getStorageDate,10);
 				}else{
@@ -130,18 +135,17 @@
 	        	var date = new Date(that.opts.timestamp);
 	       		var formattedDate = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2) + " " + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
 
-				that.opts.updateText.html('更新时间：'+formattedDate)
-					        					
+				that.opts.updateText.html('更新时间：'+formattedDate);
+				//如果有缓存，则不再请求数据，使用本地数据    					
 				if(that.opts.getStorageDate){
 					iPhoneType(JSON.parse(japanResult),"japan",that.opts.JPY);
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
 					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
-					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
-					that.opts.ul.show();
-		    		that.opts.loading.hide();
+					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);	    
 					return ;
-				}				
-
+				}	
+				
+				//循环json对象
 				for (var prop in iphoneJson) {
 					var item = iphoneJson[prop];
 					for (var p in item) {
@@ -156,130 +160,118 @@
 							iPhoneType(chinaResult[0],"china",that.opts.CNY);
 						}else{
 							usResult.push(item[p]);
-							iPhoneType(usResult[0],"us",that.opts.USD);
-							that.opts.ul.show();
-		    				that.opts.loading.hide();
-						}
-					}
+							iPhoneType(usResult[0],"us",that.opts.USD);				 	
+						}						
+					}					
 				}
-				//获取汇率
-				function getCurrency(unit){
-					var rates = function(){
-						var rate = '';
-						$.ajax({ 
-					        type : "get", 
-					        url : "https://api.fixer.io/latest?", 
-					        data : {
-					        	"base":unit,
-					        	"symbols":"CNY"
-					        }, 
-					        timeout : 30000,
-					        async : false, 
-					        success : function(data){ 
-					        	rate = data.rates.CNY;
-					        },error:function(xhr,textStatus){
-					        	rate = null;
-					        	console.log(textStatus);
-					        }				        
-					    }); 
-					    return rate;
-					}();
-					return rates;
-				}
+
 				//解析数据输出
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
 					var iphoneResult = [];
 					var exchange = +exchange || 1;
-					var results = {};
+					var currentIndex = 0;  
 					var iphoneJson = [];
-					results['iphoneJson'] = [];
-					var resultJson = results['iphoneJson'];
-
-					for (var i=0, len = result.length; i < len; i++) {
-						(function(i){
-							var param = {
-								item : result[i],
-								country: country,
-								exchange : exchange
-							}
-							
+					var resultJson = {};
+					
+					//递归ajax按顺序请求
+					function getDataJson () {
+						if(currentIndex >= result.length){
 							if(!that.opts.getStorageDate){
-								getWebJson(param,iphoneResult,resultJson,iphoneJson);
-							}else{
-								getStorage(param,iphoneResult)
-							}							
-						})(i)
-					};											
-				}
-				//本地获取数据
-				function getStorage (param,iphoneResult) {
-					var name = param.item['name'],
-						city = param.item['city'],
-						capacity = param.item['capacity'],
-						float_price = param.item['seo_price']
-
-					iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
-					$("#"+city).html(iphoneResult.join(''));
-				}
-				//在线获取数据
-				function getWebJson (param,iphoneResult,resultJson,iphoneJson) {
-					var name = param.item['name'],
-						city = param.item['city'],
-						capacity = param.item['capacity'],
-						urlPath = param.country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ param.item['type'] +"&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED";
-
-		            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
-		                q: "select * from json where url=\""+urlPath+"\"",
-		                format: "json"
-		            }, function (data) {
-		                if (data.query.results) {
-		                    var head = data.query.results.json ? data.query.results.json.head : '';
-		                    var body = data.query.results.json ? data.query.results.json.body : '';
-
-		                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
-	                    	var float_price = seo_price ? (parseFloat(seo_price) * param.exchange).toFixed(2) : '暂无';		                    	
-
-					    	iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
-
-					    	resultJson = {
-						    	seo_price:float_price,
-						    	country:param.country,
-						    	city:city,
-						    	name:name,
-						    	capacity:capacity
-					    	}
-					    	 
-					    	iphoneJson.push(resultJson)						   
-					    	iphoneJson.join('');
-
-		 					$("#"+city).html(iphoneResult.join(''));
-		 					//缓存
-							if(!storage){
-								return false;
-							}else{
-								storage.setItem("update",that.opts.update);
-								storage.setItem(param.country,JSON.stringify(iphoneJson));
-								storage.setItem("USD",that.opts.USD)
-								storage.setItem("JPY",that.opts.JPY)
-								storage.setItem("HKD",that.opts.HKD)
-								storage.setItem("CNY","1")
+								iphoneJson.join('');
+								//缓存
+								if(!storage){
+									console.log('浏览器不支持离线存储！');
+								}else{
+									storage.setItem("update",that.opts.update);
+									storage.setItem(country,JSON.stringify(iphoneJson));
+								}
 							}
-		                }else {
-		                    iphoneResult.push("<li>no such code: "+ head.status +"</li>");
-	             		}
-		            });
+		 					$("#"+result[result.length - 1]['city']).html(iphoneResult.join(''));
+		 					that.opts.loading.fadeOut(300);
+							that.opts.ul.fadeIn(150);			
+							return;
+						}
+						var name = result[currentIndex]['name'],
+							city = result[currentIndex]['city'],
+							capacity = result[currentIndex]['capacity'];
+						//在线获取数据	
+						if(!that.opts.getStorageDate){
+							var urlPath = country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ result[currentIndex]['type'] +"&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED";
+
+				            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
+				                q: "select * from json where url=\""+urlPath+"\"",
+				                format: "json"
+				            }, function (data) {							
+				                if (data.query.results) {
+				                	currentIndex++;
+				                    var head = data.query.results.json ? data.query.results.json.head : '';
+				                    var body = data.query.results.json ? data.query.results.json.body : '';
+
+				                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
+			                    	var float_price = seo_price ? (parseFloat(seo_price) * exchange).toFixed(2) : '暂无';		                    	
+
+							    	iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+
+							    	resultJson = {
+								    	seo_price:float_price,
+								    	country:country,
+								    	city:city,
+								    	name:name,
+								    	capacity:capacity
+							    	}
+							    	 
+							    	iphoneJson.push(resultJson)		
+							    	getDataJson();				   
+							    										
+				                }else {				                	
+				                    iphoneResult.push("<li>暂无数据，请稍候重试</li>");
+				                    console.log("no such code: "+ head.status)
+				                    currentIndex++; 
+				                    getDataJson();	
+			             		}
+				            });	
+						}else{//离线							
+							var float_price = result[currentIndex]['seo_price'];
+
+							iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+							currentIndex++;
+							getDataJson();
+						}														
+					}
+					getDataJson();									
 				}
 			};
+			UpDateiPhone.prototype.initGetCurrency = function(options){
+				var that = this;
+				var getStorageDate = storage && storage.getItem('update');
+				if(!getStorageDate){
+					$.when($.ajax("https://api.fixer.io/latest?base=USD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=HKD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=JPY&symbols=CNY")).done(function(usd,hkd,jpy){
+						//存储汇率
+						if(storage){
+				    		storage.setItem("USD",usd[0].rates.CNY)
+							storage.setItem("JPY",jpy[0].rates.CNY)
+							storage.setItem("HKD",hkd[0].rates.CNY)
+							storage.setItem("CNY","1")
+				    	}	
+				    	that.showPhonePrice(options);
+					}).fail(function(){
+						that.showPhonePrice(options);
+						console.log('获取数据失败')
+					});									
+				}else{
+					that.showPhonePrice(options);
+				}
+			}
 		})(window, window.jQuery);
 
 		$("body").PhonePrice();
 		$(".btn").on("click", function () {
 			var storage = window.localStorage;
 			if(storage){
-				storage.clear();
-				$("body").PhonePrice();
+				storage.clear();				
 			}
+			$("body").PhonePrice();
 		});
 	</script>
 </body>
