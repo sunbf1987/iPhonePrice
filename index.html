@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,15 +84,10 @@
 		</div>
 	</div>
 	<script>
-		var 
 		!(function(win,$){
 			var iphoneJson = win.iphoneJson,
 				storage = win.localStorage;
-<<<<<<< HEAD
-=======
 			
->>>>>>> gh-pages
-
 		    $.fn.PhonePrice = function(options){
 		        return new UpDateiPhone(this,options)
 		    };
@@ -103,19 +99,6 @@
 		    };
 		    UpDateiPhone.prototype.init = function(options){
 		    	var that = this;
-<<<<<<< HEAD
-		    	that.opts = $.extend({},{
-		    		update : new Date().getTime(), //初始时间
-					timestamp : 0,					
-		    		getStorageDate : storage ? storage.getItem('update') : undefined, //上次访问时间
-		    		updateText:that.$el.find('.update'),
-		    		CNY : '1',
-		    		USD: storage ? storage.getItem('USD') : getCurrency('USD'),
-		    		HKD: storage ? storage.getItem('HKD') : getCurrency('HKD'),
-		    		JPY: storage ? storage.getItem('JPY') : getCurrency('JPY')
-		    	},options);
-		    	console.log('CNY:'+CNY+', USD:'+USD+', HKD:'+HKD+', JPY:'+JPY);
-=======
 		    	that.initGetCurrency(options);
 			};
 			UpDateiPhone.prototype.showPhonePrice = function(options){
@@ -132,23 +115,15 @@
 		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : '0.84374',
 		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : '0.059077'
 		    	},options);	
-
 				that.opts.ul.fadeOut(100);
 		    	that.opts.loading.fadeIn(150);
-
 		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
-
->>>>>>> gh-pages
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
 					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
 					chinaResult = !that.opts.getStorageDate ? [] : storage.getItem('china');
 				
-<<<<<<< HEAD
-
-=======
 				//转换时间戳 yyyy/mm/dd hh:mm
->>>>>>> gh-pages
 				if(that.opts.getStorageDate){
 					that.opts.timestamp = parseInt(that.opts.getStorageDate,10);
 				}else{
@@ -156,18 +131,13 @@
 				}			
 	        	var date = new Date(that.opts.timestamp);
 	       		var formattedDate = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2) + " " + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
-
 				that.opts.updateText.html('更新时间：'+formattedDate);
 				//如果有缓存，则不再请求数据，使用本地数据    					
 				if(that.opts.getStorageDate){
 					iPhoneType(JSON.parse(japanResult),"japan",that.opts.JPY);
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
 					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
-<<<<<<< HEAD
-					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
-=======
 					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);	    
->>>>>>> gh-pages
 					return ;
 				}	
 				
@@ -190,28 +160,6 @@
 						}						
 					}					
 				}
-<<<<<<< HEAD
-				
-				function getCurrency(unit){
-					var rate = '';
-					$.ajax({ 
-				        type : "get", 
-				        url : "https://api.fixer.io/latest?", 
-				        data : "base="+unit+"&symbols=CNY", 
-				        timeout : 30000,
-				        async : false, 
-				        success : function(resp){ 
-				        	rate = resp.data.rates.CNY;
-				        },error:function(xhr,textStatus){
-				        	rate = null;
-				        	console.log(textStatus)
-				        }
-				        return rate;
-				    }); 
-				}
-=======
->>>>>>> gh-pages
-
 				//解析数据输出
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
@@ -245,16 +193,6 @@
 						//在线获取数据	
 						if(!that.opts.getStorageDate){
 							var urlPath = country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ result[currentIndex]['type'] +"&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED";
-
-<<<<<<< HEAD
-		            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
-		                q: "select * from json where url=\""+urlPath+"\"",
-		                format: "json"
-		            }, function (data) {
-		                if (data.query.results) {
-		                    var head = data.query.results.json ? data.query.results.json.head : '';
-		                    var body = data.query.results.json ? data.query.results.json.body : '';
-=======
 				            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
 				                q: "select * from json where url=\""+urlPath+"\"",
 				                format: "json"
@@ -263,13 +201,9 @@
 				                	currentIndex++;
 				                    var head = data.query.results.json ? data.query.results.json.head : '';
 				                    var body = data.query.results.json ? data.query.results.json.body : '';
->>>>>>> gh-pages
-
 				                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
 			                    	var float_price = seo_price ? (parseFloat(seo_price) * exchange).toFixed(2) : '暂无';		                    	
-
 							    	iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
-
 							    	resultJson = {
 								    	seo_price:float_price,
 								    	country:country,
@@ -290,34 +224,6 @@
 				            });	
 						}else{//离线							
 							var float_price = result[currentIndex]['seo_price'];
-
-<<<<<<< HEAD
-		 					$("#"+city).html(iphoneResult.join(''));
-		 					//缓存
-							if(!storage){
-								return false;
-							}else{
-								storage.setItem("update",that.opts.update);
-								storage.setItem(param.country,JSON.stringify(iphoneJson));
-								storage.setItem("USD",that.opts.USD)
-								storage.setItem("JPY",that.opts.JPY)
-								storage.setItem("HKD",that.opts.HKD)
-								storage.setItem("CNY","1")
-							}
-		                }else {
-		                    iphoneResult.push("<li>no such code: "+ head.status +"</li>");
-	             		}
-		            });
-				}
-			}
-		})(window, window.jQuery);
-		$("#content").PhonePrice();
-		$(".btn").on("click", function () {
-			var storage = window.localStorage;
-			if(storage){
-				storage.clear();
-				$("#content").PhonePrice();
-=======
 							iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
 							currentIndex++;
 							getDataJson();
@@ -348,13 +254,11 @@
 				}
 			}
 		})(window, window.jQuery);
-
 		$("body").PhonePrice();
 		$(".btn").on("click", function () {
 			var storage = window.localStorage;
 			if(storage){
 				storage.clear();				
->>>>>>> gh-pages
 			}
 			$("body").PhonePrice();
 		});
