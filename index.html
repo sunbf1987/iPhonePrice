@@ -9,25 +9,46 @@
 <meta name="keywords" content="">
 <link href="" rel="stylesheet">
 <style type="text/css">
-	*{margin:0; padding:0;}
-	ul{ list-style: none; display: table;}
-	li{ margin:10px auto; list-style: none; display:table-row;}
-	span{margin:20px; display:inline-block; width:150px;}
-	h1{ font-size:26px; font-weight: 700; margin-top:10px;}
-	.info{ overflow: hidden; line-height:40px;}
-	p{ font-size:14px;}
-	.update{ font-size:20px; font-weight: 400; margin-top:10px;}
-	.btn{float:right; border:0 none; padding:5px 10px; outline: none; cursor:pointer; border-radius: 4px; margin:-34px 100px 0 0; background-color: #f1f1f1; touch-action: manipulation; transition: all .3s;}
-	.btn:hover{color: #333; background-color: #e6e6e6;}
-	#cn{background-color:aliceblue; margin-top:200px;}
-	#jp{background-color:beige;}
-	#us{background-color:honeydew;}
-	#hk-zh{background-color:ivory;}
-	#content{ width:760px; margin:0 auto; text-align: center; font-size:16px;}
-	#thead{ background-color:lightgreen; font-size:18px; position: fixed; top:0;}
+	*{margin:0;padding:0}
+	ul{display: none}
+	li,ul{list-style:none}
+	span{display:inline-block;margin:20px;width:150px}
+	h1{margin-top:10px;font-weight:700;font-size:26px}
+	p{font-size:14px}
+	.info{overflow:hidden;line-height:40px}	
+	.update{margin-top:10px;font-weight:400;font-size:20px}
+	.btn{float:right;margin:-34px 75pt 0 0;padding:5px 10px;outline:0;border:0 none;border-radius:4px;background-color:#f1f1f1;cursor:pointer;transition:all .3s;}
+	.btn:hover{background-color:#e6e6e6;color:#333}
+	#cn{margin-top:280px;background-color:#f0f8ff}
+	#jp{background-color:beige}
+	#us{background-color:#f0fff0}
+	#hk-zh{background-color:ivory}
+	#content{margin:0 auto;width:760px;height:125pc;text-align:center;font-size:1pc}
+	#thead{background-color:#90ee90;font-size:18px}
+	#loading,#thead{position:fixed;top:0}
+	#loading{left:0;overflow:hidden;width:100%;height:100%;background-color:rgba(255,0,0,0)}
+	.load{position:absolute;top:50%;left:50%;margin:-50px 0 0 -50px;width:75pt;height:75pt;border-radius:5px;background-color:rgba(0,0,0,.6);color:#fff;text-align:center;font-size:14px}
+	.load p{margin-top:70px}
+	.line-spin-fade-loader{position:relative;top:28px;left:46px}
+	.line-spin-fade-loader>div{position:absolute;margin:2px;width:4px;height:14px;border-radius:2px;background-color:#fff;-webkit-animation-fill-mode:both;animation-fill-mode:both}
+	.line-spin-fade-loader>div:nth-child(1){top:1pc;left:0;-webkit-animation:line-spin-fade-loader 1.2s .12s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .12s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(2){top:8.73pt;left:8.73pt;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-ms-transform:rotate(-45deg);-webkit-animation:line-spin-fade-loader 1.2s .24s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .24s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(3){top:0;left:1pc;-webkit-transform:rotate(90deg);transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-animation:line-spin-fade-loader 1.2s .36s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .36s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(4){top:-8.73pt;left:8.73pt;-webkit-transform:rotate(45deg);transform:rotate(45deg);-ms-transform:rotate(45deg);-webkit-animation:line-spin-fade-loader 1.2s .48s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .48s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(5){top:-1pc;left:0;-webkit-animation:line-spin-fade-loader 1.2s .6s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .6s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(6){top:-8.73pt;left:-8.73pt;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-ms-transform:rotate(-45deg);-webkit-animation:line-spin-fade-loader 1.2s .72s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .72s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(7){top:0;left:-1pc;-webkit-transform:rotate(90deg);transform:rotate(90deg);-ms-transform:rotate(90deg);-webkit-animation:line-spin-fade-loader 1.2s .84s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .84s infinite ease-in-out}
+	.line-spin-fade-loader>div:nth-child(8){top:8.73pt;left:-8.73pt;-webkit-transform:rotate(45deg);transform:rotate(45deg);-ms-transform:rotate(45deg);-webkit-animation:line-spin-fade-loader 1.2s .96s infinite ease-in-out;animation:line-spin-fade-loader 1.2s .96s infinite ease-in-out}
+	@-webkit-keyframes line-spin-fade-loader{
+		50%{opacity:.3}
+		to{opacity:1}
+	}
+	@keyframes line-spin-fade-loader{
+		50%{opacity:.3}
+		to{opacity:1}
+	}
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script type="text/javascript" src="json2.js"></script>
 <script type="text/javascript" src="iphoneJson.js"></script>
 </head>
 <body>
@@ -37,7 +58,7 @@
 			<div class="info">				
 				<h2 class="update"></h2>
 				<button class="btn">更新数据</button>
-				<p>数据来源：https://www.apple.com/</p>				
+				<p><span>数据来源：https://www.apple.com/</span><span>货币汇率来源：https://fixer.io/</span></p>			
 			</div>
 			<div><span>地区</span><span>型号</span><span>容量</span><span>价格</span></div>
 		</div>
@@ -46,11 +67,30 @@
 		<ul id="us"></ul>
 		<ul id="jp"></ul>
 	</div>
+	<div id="loading">
+		<div class="load">
+			<div class="loader-inner line-spin-fade-loader">
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	          <div></div>
+	        </div>
+			<p>数据加载中</p>
+		</div>
+	</div>
 	<script>
 		var 
 		!(function(win,$){
 			var iphoneJson = win.iphoneJson,
 				storage = win.localStorage;
+<<<<<<< HEAD
+=======
+			
+>>>>>>> gh-pages
 
 		    $.fn.PhonePrice = function(options){
 		        return new UpDateiPhone(this,options)
@@ -63,6 +103,7 @@
 		    };
 		    UpDateiPhone.prototype.init = function(options){
 		    	var that = this;
+<<<<<<< HEAD
 		    	that.opts = $.extend({},{
 		    		update : new Date().getTime(), //初始时间
 					timestamp : 0,					
@@ -74,12 +115,40 @@
 		    		JPY: storage ? storage.getItem('JPY') : getCurrency('JPY')
 		    	},options);
 		    	console.log('CNY:'+CNY+', USD:'+USD+', HKD:'+HKD+', JPY:'+JPY);
+=======
+		    	that.initGetCurrency(options);
+			};
+			UpDateiPhone.prototype.showPhonePrice = function(options){
+				var that = this;
+				that.opts = $.extend({},{
+		    		update : new Date().getTime(), //初始时间
+					timestamp : 0,					
+		    		getStorageDate : storage && storage.getItem('update') ? storage.getItem('update') : undefined, //上次访问时间
+		    		updateText:that.$el.find('.update'),
+		    		ul: that.$el.find('ul'),
+		    		loading: that.$el.find('#loading'),
+		    		CNY: storage && storage.getItem('CNY') ? storage.getItem('CNY') : '1',
+		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : '6.5847',
+		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : '0.84374',
+		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : '0.059077'
+		    	},options);	
+
+				that.opts.ul.fadeOut(100);
+		    	that.opts.loading.fadeIn(150);
+
+		    	console.log('CNY:'+that.opts.CNY+', USD:'+that.opts.USD+', HKD:'+that.opts.HKD+', JPY:'+that.opts.JPY);
+
+>>>>>>> gh-pages
 		    	var japanResult = !that.opts.getStorageDate ? [] : storage.getItem('japan'),
 					hongkongResult = !that.opts.getStorageDate ? [] : storage.getItem('hongkong'),
 					usResult = !that.opts.getStorageDate ? [] : storage.getItem('us'),
 					chinaResult = !that.opts.getStorageDate ? [] : storage.getItem('china');
 				
+<<<<<<< HEAD
 
+=======
+				//转换时间戳 yyyy/mm/dd hh:mm
+>>>>>>> gh-pages
 				if(that.opts.getStorageDate){
 					that.opts.timestamp = parseInt(that.opts.getStorageDate,10);
 				}else{
@@ -88,17 +157,21 @@
 	        	var date = new Date(that.opts.timestamp);
 	       		var formattedDate = date.getFullYear() + "/" + ('0' + (date.getMonth() + 1)).slice(-2) + "/" + ('0' + date.getDate()).slice(-2) + " " + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
 
-				that.opts.updateText.html('更新时间：'+formattedDate)
-					        		
-				console.log(that.opts.getStorageDate)				
+				that.opts.updateText.html('更新时间：'+formattedDate);
+				//如果有缓存，则不再请求数据，使用本地数据    					
 				if(that.opts.getStorageDate){
 					iPhoneType(JSON.parse(japanResult),"japan",that.opts.JPY);
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
 					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
+<<<<<<< HEAD
 					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);
+=======
+					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);	    
+>>>>>>> gh-pages
 					return ;
-				}				
-
+				}	
+				
+				//循环json对象
 				for (var prop in iphoneJson) {
 					var item = iphoneJson[prop];
 					for (var p in item) {
@@ -113,10 +186,11 @@
 							iPhoneType(chinaResult[0],"china",that.opts.CNY);
 						}else{
 							usResult.push(item[p]);
-							iPhoneType(usResult[0],"us",that.opts.USD);
-						}
-					}
+							iPhoneType(usResult[0],"us",that.opts.USD);				 	
+						}						
+					}					
 				}
+<<<<<<< HEAD
 				
 				function getCurrency(unit){
 					var rate = '';
@@ -135,50 +209,44 @@
 				        return rate;
 				    }); 
 				}
+=======
+>>>>>>> gh-pages
 
+				//解析数据输出
 				function iPhoneType(obj,country,exchange) {
 					var result = obj;
 					var iphoneResult = [];
 					var exchange = +exchange || 1;
-					var results = {};
+					var currentIndex = 0;  
 					var iphoneJson = [];
-					results['iphoneJson'] = [];
-					var resultJson = results['iphoneJson'];
-
-					for (var i=0, len = result.length; i < len; i++) {
-						(function(i){
-							var param = {
-								item : result[i],
-								country: country,
-								exchange : exchange
-							}
-							
-							if(!that.opts.getStorageDate){
-								getWebJson(param,iphoneResult,resultJson,iphoneJson);
-							}else{
-								getStorage(param,iphoneResult)
-							}
-							
-						})(i)
-					};
+					var resultJson = {};
 					
-				}
-				function getStorage (param,iphoneResult) {
-					var name = param.item['name'],
-						city = param.item['city'],
-						capacity = param.item['capacity'],
-						float_price = param.item['seo_price']
+					//递归ajax按顺序请求
+					function getDataJson () {
+						if(currentIndex >= result.length){
+							if(!that.opts.getStorageDate){
+								iphoneJson.join('');
+								//缓存
+								if(!storage){
+									console.log('浏览器不支持离线存储！');
+								}else{
+									storage.setItem("update",that.opts.update);
+									storage.setItem(country,JSON.stringify(iphoneJson));
+								}
+							}
+		 					$("#"+result[result.length - 1]['city']).html(iphoneResult.join(''));
+		 					that.opts.loading.fadeOut(300);
+							that.opts.ul.fadeIn(150);			
+							return;
+						}
+						var name = result[currentIndex]['name'],
+							city = result[currentIndex]['city'],
+							capacity = result[currentIndex]['capacity'];
+						//在线获取数据	
+						if(!that.opts.getStorageDate){
+							var urlPath = country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ result[currentIndex]['type'] +"&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ result[currentIndex]['product'] +"&carrierPolicyType=UNLOCKED";
 
-					iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
-					$("#"+city).html(iphoneResult.join(''));
-				}
-
-				function getWebJson (param,iphoneResult,resultJson,iphoneJson) {
-					var name = param.item['name'],
-						city = param.item['city'],
-						capacity = param.item['capacity'],
-						urlPath = param.country !== 'us' ? "https://www.apple.com/"+ city +"/shop/updateSummary?node=home/shop_iphone/family/"+ param.item['type'] +"&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED" : "https://www.apple.com/shop/updateSummary?node=home/shop_iphone/family/iphone_8&step=select&product="+ param.item['product'] +"&carrierPolicyType=UNLOCKED";
-
+<<<<<<< HEAD
 		            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
 		                q: "select * from json where url=\""+urlPath+"\"",
 		                format: "json"
@@ -186,23 +254,44 @@
 		                if (data.query.results) {
 		                    var head = data.query.results.json ? data.query.results.json.head : '';
 		                    var body = data.query.results.json ? data.query.results.json.body : '';
+=======
+				            $.getJSON("https://query.yahooapis.com/v1/public/yql", {
+				                q: "select * from json where url=\""+urlPath+"\"",
+				                format: "json"
+				            }, function (data) {							
+				                if (data.query.results) {
+				                	currentIndex++;
+				                    var head = data.query.results.json ? data.query.results.json.head : '';
+				                    var body = data.query.results.json ? data.query.results.json.body : '';
+>>>>>>> gh-pages
 
-		                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
-	                    	var float_price = seo_price ? (parseFloat(seo_price) * param.exchange).toFixed(2) : '暂无';		                    	
+				                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
+			                    	var float_price = seo_price ? (parseFloat(seo_price) * exchange).toFixed(2) : '暂无';		                    	
 
-					    	iphoneResult.push("<li><span class='country'>"+ param.country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+							    	iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
 
-					    	resultJson = {
-						    	seo_price:float_price,
-						    	country:param.country,
-						    	city:city,
-						    	name:name,
-						    	capacity:capacity
-					    	}
-					    	 
-					    	iphoneJson.push(resultJson)						   
-					    	iphoneJson.join('');
+							    	resultJson = {
+								    	seo_price:float_price,
+								    	country:country,
+								    	city:city,
+								    	name:name,
+								    	capacity:capacity
+							    	}
+							    	 
+							    	iphoneJson.push(resultJson)		
+							    	getDataJson();				   
+							    										
+				                }else {				                	
+				                    iphoneResult.push("<li>暂无数据，请稍候重试</li>");
+				                    console.log("no such code: "+ head.status)
+				                    currentIndex++; 
+				                    getDataJson();	
+			             		}
+				            });	
+						}else{//离线							
+							var float_price = result[currentIndex]['seo_price'];
 
+<<<<<<< HEAD
 		 					$("#"+city).html(iphoneResult.join(''));
 		 					//缓存
 							if(!storage){
@@ -228,8 +317,47 @@
 			if(storage){
 				storage.clear();
 				$("#content").PhonePrice();
+=======
+							iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+							currentIndex++;
+							getDataJson();
+						}														
+					}
+					getDataJson();									
+				}
+			};
+			UpDateiPhone.prototype.initGetCurrency = function(options){
+				var that = this;
+				var getStorageDate = storage && storage.getItem('update');
+				if(!getStorageDate){
+					$.when($.ajax("https://api.fixer.io/latest?base=USD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=HKD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=JPY&symbols=CNY")).done(function(usd,hkd,jpy){
+						//存储汇率
+						if(storage){
+				    		storage.setItem("USD",usd[0].rates.CNY)
+							storage.setItem("JPY",jpy[0].rates.CNY)
+							storage.setItem("HKD",hkd[0].rates.CNY)
+							storage.setItem("CNY","1")
+				    	}	
+				    	that.showPhonePrice(options);
+					}).fail(function(){
+						that.showPhonePrice(options);
+						console.log('获取数据失败')
+					});									
+				}else{
+					that.showPhonePrice(options);
+				}
 			}
-		})
+		})(window, window.jQuery);
+
+		$("body").PhonePrice();
+		$(".btn").on("click", function () {
+			var storage = window.localStorage;
+			if(storage){
+				storage.clear();				
+>>>>>>> gh-pages
+			}
+			$("body").PhonePrice();
+		});
 	</script>
 </body>
 </html>
