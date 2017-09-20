@@ -267,6 +267,7 @@
 
 		$("body").PhonePrice();
 		$(".btn").on("click", function () {
+			$(this).attr("disabled","disabled")
 			var storage = window.localStorage;
 			if(storage){
 				storage.clear();				
