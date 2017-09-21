@@ -177,7 +177,7 @@
 					var resultJsonObj = {};
 					
 					//递归ajax按顺序请求
-					function getDataJson () {
+					var getDataJson = function() {
 						if(currentIndex >= result.length){
 							if(!that.opts.getStorageDate){
 								iphoneJsonArr.join('');
@@ -191,7 +191,8 @@
 							}
 		 					$("#"+result[result.length - 1]['city']).html(iphoneResultArr.join(''));
 		 					that.opts.loading.fadeOut(300);
-							that.opts.ul.fadeIn(150);			
+							that.opts.ul.fadeIn(150);	
+							getDataJson = null;		
 							return;
 						}
 						var name = result[currentIndex]['name'],
