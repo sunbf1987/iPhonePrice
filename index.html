@@ -23,7 +23,7 @@
 	#jp{background-color:beige}
 	#us{background-color:#f0fff0}
 	#hk-zh{background-color:ivory}
-	#content{margin:0 auto;width:760px;height:125pc;text-align:center;font-size:1pc}
+	#content{margin:0 auto;width:760px;height:125pc;text-align:center;font-size:16px}
 	#thead{background-color:#90ee90;font-size:18px}
 	#loading,#thead{position:fixed;top:0}
 	#loading{left:0;overflow:hidden;width:100%;height:100%;background-color:rgba(255,0,0,0)}
@@ -50,6 +50,7 @@
 </style>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="iphoneJson.js"></script>
+<script type="text/javascript" src="json2.js"></script>
 </head>
 <body>
 	<div id="content">
@@ -85,8 +86,7 @@
 	<script>
 		!(function(win,$){
 			var iphoneJson = win.iphoneJson,
-				storage = win.localStorage;
-			
+				storage = win.localStorage;			
 
 		    $.fn.PhonePrice = function(options){
 		        return new UpDateiPhone(this,options)
@@ -103,6 +103,8 @@
 			};
 			UpDateiPhone.prototype.showPhonePrice = function(options){
 				var that = this;
+				var currency = JSON.parse(storage.getItem('currency'));
+				currency = currency ? currency : {};
 				that.opts = $.extend({},{
 		    		update : new Date().getTime(), //初始时间
 					timestamp : 0,					
@@ -110,10 +112,10 @@
 		    		updateText:that.$el.find('.update'),
 		    		ul: that.$el.find('ul'),
 		    		loading: that.$el.find('#loading'),
-		    		CNY: storage && storage.getItem('CNY') ? storage.getItem('CNY') : '1',
-		    		USD: storage && storage.getItem('USD') ? storage.getItem('USD') : '6.5847',
-		    		HKD: storage && storage.getItem('HKD') ? storage.getItem('HKD') : '0.84374',
-		    		JPY: storage && storage.getItem('JPY') ? storage.getItem('JPY') : '0.059077'
+		    		CNY: currency.CNY ? currency.CNY : '1',
+		    		USD: currency.USD ? currency.USD : '6.5847',
+		    		HKD: currency.HKD ? currency.HKD : '0.84374',
+		    		JPY: currency.JPY ? currency.JPY : '0.059077'
 		    	},options);	
 
 				that.opts.ul.fadeOut(100);
@@ -142,7 +144,7 @@
 					iPhoneType(JSON.parse(hongkongResult),"hongkong",that.opts.HKD);
 					iPhoneType(JSON.parse(chinaResult),"china",that.opts.CNY);
 					iPhoneType(JSON.parse(usResult),"us",that.opts.USD);	    
-					return ;
+					return;
 				}	
 				
 				//循环json对象
@@ -166,28 +168,28 @@
 				}
 
 				//解析数据输出
-				function iPhoneType(obj,country,exchange) {
+				function iPhoneType(obj,country,exchangeNum) {
 					var result = obj;
-					var iphoneResult = [];
-					var exchange = +exchange || 1;
+					var iphoneResultArr = [];
+					var exchangeNum = +exchangeNum || 1;
 					var currentIndex = 0;  
-					var iphoneJson = [];
-					var resultJson = {};
+					var iphoneJsonArr = [];
+					var resultJsonObj = {};
 					
 					//递归ajax按顺序请求
 					function getDataJson () {
 						if(currentIndex >= result.length){
 							if(!that.opts.getStorageDate){
-								iphoneJson.join('');
+								iphoneJsonArr.join('');
 								//缓存
-								if(!storage){
-									console.log('浏览器不支持离线存储！');
-								}else{
+								if(storage){
 									storage.setItem("update",that.opts.update);
-									storage.setItem(country,JSON.stringify(iphoneJson));
+									storage.setItem(country,JSON.stringify(iphoneJsonArr))					
+								}else{
+									console.log('浏览器不支持离线存储！');
 								}
 							}
-		 					$("#"+result[result.length - 1]['city']).html(iphoneResult.join(''));
+		 					$("#"+result[result.length - 1]['city']).html(iphoneResultArr.join(''));
 		 					that.opts.loading.fadeOut(300);
 							that.opts.ul.fadeIn(150);			
 							return;
@@ -209,11 +211,11 @@
 				                    var body = data.query.results.json ? data.query.results.json.body : '';
 
 				                    var seo_price = (body && head) ? body['response']['summarySection']['summary']['seoPrice'] : '';
-			                    	var float_price = seo_price ? (parseFloat(seo_price) * exchange).toFixed(2) : '暂无';		                    	
+			                    	var float_price = seo_price ? (parseFloat(seo_price) * exchangeNum).toFixed(2) : '暂无';		                    	
 
-							    	iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+							    	iphoneResultArr.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
 
-							    	resultJson = {
+							    	resultJsonObj = {
 								    	seo_price:float_price,
 								    	country:country,
 								    	city:city,
@@ -221,11 +223,11 @@
 								    	capacity:capacity
 							    	}
 							    	 
-							    	iphoneJson.push(resultJson)		
+							    	iphoneJsonArr.push(resultJsonObj)		
 							    	getDataJson();				   
 							    										
 				                }else {				                	
-				                    iphoneResult.push("<li>暂无数据，请稍候重试</li>");
+				                    iphoneResultArr.push("<li>暂无数据，请稍候重试</li>");
 				                    console.log("no such code: "+ head.status)
 				                    currentIndex++; 
 				                    getDataJson();	
@@ -234,7 +236,7 @@
 						}else{//离线							
 							var float_price = result[currentIndex]['seo_price'];
 
-							iphoneResult.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
+							iphoneResultArr.push("<li><span class='country'>"+ country +"</span><span class='name'>"+ name +"</span><span class='capacity'>"+ capacity +"G</span><span class='price'>￥"+float_price +"</span></li>");
 							currentIndex++;
 							getDataJson();
 						}														
@@ -244,23 +246,37 @@
 			};
 			UpDateiPhone.prototype.initGetCurrency = function(options){
 				var that = this;
-				var getStorageDate = storage && storage.getItem('update');
-				if(!getStorageDate){
-					$.when($.ajax("https://api.fixer.io/latest?base=USD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=HKD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=JPY&symbols=CNY")).done(function(usd,hkd,jpy){
-						//存储汇率
-						if(storage){
-				    		storage.setItem("USD",usd[0].rates.CNY)
-							storage.setItem("JPY",jpy[0].rates.CNY)
-							storage.setItem("HKD",hkd[0].rates.CNY)
-							storage.setItem("CNY","1")
-				    	}	
+				var getStorageDate = storage.getItem('update');
+				if(storage){
+					if(!getStorageDate){
+						$.when($.ajax("https://api.fixer.io/latest?base=USD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=HKD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=JPY&symbols=CNY")).done(function(usd,hkd,jpy){
+							//存储汇率
+							var objCurrency = {
+								"USD":usd[0].rates.CNY,
+								"JPY":jpy[0].rates.CNY,
+								"HKD":hkd[0].rates.CNY,
+								"CNY":"1"
+							};
+					    	storage.setItem("currency",JSON.stringify(objCurrency));
+					    	that.showPhonePrice(options);
+						}).fail(function(){
+							that.showPhonePrice(options);
+							console.log('获取数据失败')
+						});									
+					}else{
+						that.showPhonePrice(options);	
+					}
+				}else{			
+					$.when($.ajax("https://api.fixer.io/latest?base=USD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=HKD&symbols=CNY"),$.ajax("https://api.fixer.io/latest?base=JPY&symbols=CNY")).done(function(usd,hkd,jpy){					
+						options.USD = usd[0].rates.CNY;
+						options.JPY = jpy[0].rates.CNY;
+						options.HKD = hkd[0].rates.CNY;
+						options.CNY = "1";
 				    	that.showPhonePrice(options);
 					}).fail(function(){
 						that.showPhonePrice(options);
 						console.log('获取数据失败')
-					});									
-				}else{
-					that.showPhonePrice(options);
+					});
 				}
 			}
 		})(window, window.jQuery);
